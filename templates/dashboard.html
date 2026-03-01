@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Drowsiness Detection — Dashboard</title>
+    <meta name="description" content="Real-time driver drowsiness detection dashboard using computer vision and machine learning">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <circle cx="16" cy="16" r="14" stroke="url(#grad1)" stroke-width="2.5"/>
+                    <circle cx="12" cy="14" r="2.5" fill="#00d4ff"/>
+                    <circle cx="20" cy="14" r="2.5" fill="#00d4ff"/>
+                    <path d="M10 20 Q16 24 22 20" stroke="#00d4ff" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                    <defs>
+                        <linearGradient id="grad1" x1="0" y1="0" x2="32" y2="32">
+                            <stop offset="0%" stop-color="#00d4ff"/>
+                            <stop offset="100%" stop-color="#7c3aed"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <div>
+                <h1>Driver Drowsiness Detection</h1>
+                <p class="subtitle">Real-time Monitoring System</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <span class="badge" id="connection-badge">
+                <span class="badge-dot"></span>
+                Connected
+            </span>
+            <span class="uptime" id="uptime">00:00:00</span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-grid">
+        <!-- Video Feed -->
+        <section class="card video-card" id="video-section">
+            <div class="card-header">
+                <h2>Live Camera Feed</h2>
+                <span class="fps-badge" id="fps-display">-- FPS</span>
+            </div>
+            <div class="video-container">
+                <img src="/video_feed" alt="Live camera feed" id="video-feed" />
+                <div class="video-overlay" id="video-overlay">
+                    <span class="overlay-text">Connecting to camera...</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Panel -->
+        <aside class="right-panel">
+            <!-- Drowsiness Gauge -->
+            <div class="card gauge-card">
+                <div class="card-header">
+                    <h2>Drowsiness Level</h2>
+                </div>
+                <div class="gauge-container">
+                    <div class="gauge">
+                        <svg viewBox="0 0 200 120" class="gauge-svg">
+                            <path d="M 20 100 A 80 80 0 0 1 180 100" 
+                                  class="gauge-bg" />
+                            <path d="M 20 100 A 80 80 0 0 1 180 100" 
+                                  class="gauge-fill" id="gauge-fill" />
+                        </svg>
+                        <div class="gauge-value" id="gauge-value">0</div>
+                        <div class="gauge-label" id="gauge-label">ALERT</div>
+                    </div>
+                </div>
+                <div class="status-banner" id="status-banner">
+                    <span class="status-icon">✓</span>
+                    <span class="status-text" id="status-text">Driver is Alert</span>
+                </div>
+            </div>
+
+            <!-- Metrics Grid -->
+            <div class="metrics-grid">
+                <div class="card metric-card">
+                    <div class="metric-icon ear-icon">👁️</div>
+                    <div class="metric-info">
+                        <span class="metric-label">Eye Aspect Ratio</span>
+                        <span class="metric-value" id="ear-value">0.000</span>
+                    </div>
+                    <div class="metric-bar">
+                        <div class="metric-bar-fill" id="ear-bar"></div>
+                    </div>
+                </div>
+
+                <div class="card metric-card">
+                    <div class="metric-icon mar-icon">👄</div>
+                    <div class="metric-info">
+                        <span class="metric-label">Mouth Aspect Ratio</span>
+                        <span class="metric-value" id="mar-value">0.000</span>
+                    </div>
+                    <div class="metric-bar">
+                        <div class="metric-bar-fill mar-bar-fill" id="mar-bar"></div>
+                    </div>
+                </div>
+
+                <div class="card metric-card">
+                    <div class="metric-icon">😑</div>
+                    <div class="metric-info">
+                        <span class="metric-label">Blinks</span>
+                        <span class="metric-value" id="blink-value">0</span>
+                    </div>
+                </div>
+
+                <div class="card metric-card">
+                    <div class="metric-icon">🥱</div>
+                    <div class="metric-info">
+                        <span class="metric-label">Yawns</span>
+                        <span class="metric-value" id="yawn-value">0</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Event Log -->
+        <section class="card event-card">
+            <div class="card-header">
+                <h2>Event Log</h2>
+                <button class="btn-reset" id="btn-reset" title="Reset all counters">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 1 1 .908-.418A6 6 0 1 1 8 2v1z"/>
+                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                    </svg>
+                    Reset
+                </button>
+            </div>
+            <div class="event-list" id="event-list">
+                <div class="event-empty">No events yet. Detection will begin when a face is visible.</div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Alert Overlay (shown during SEVERE drowsiness) -->
+    <div class="alert-overlay" id="alert-overlay">
+        <div class="alert-content">
+            <div class="alert-icon">⚠️</div>
+            <h2>DROWSINESS DETECTED</h2>
+            <p>Please pull over and take a break!</p>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
