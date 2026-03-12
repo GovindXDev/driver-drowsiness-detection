@@ -105,7 +105,7 @@ python main.py
 python app.py
 ```
 
-Then open **http://127.0.0.1:5000** in your browser.
+Then open **https://driver-drowsiness-detection-gcxv6y2renvwe4cyephmwk.streamlit.app/** in your browser.
 
 ---
 
