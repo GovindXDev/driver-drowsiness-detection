@@ -8,6 +8,7 @@ to determine drowsiness level.
 import os
 import time
 import math
+import urllib.request
 import numpy as np
 import cv2
 import mediapipe as mp
@@ -21,6 +22,18 @@ import config
 
 # Path to the face landmark model
 MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "face_landmarker.task")
+MODEL_URL = "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task"
+
+
+def _ensure_model():
+    """Download the face landmarker model if it doesn't exist locally."""
+    if not os.path.exists(MODEL_PATH):
+        print(f"[INFO] Downloading face_landmarker.task model...")
+        urllib.request.urlretrieve(MODEL_URL, MODEL_PATH)
+        print(f"[INFO] Model downloaded to {MODEL_PATH}")
+
+
+_ensure_model()
 
 
 class DrowsinessDetector:
